@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ComicCraft</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        🎨 ComicCraft
+    </div>
+
+    <div class="nav-text">
+        Create • Imagine • Explore
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="hero">
+
+        <div class="badge">
+            ✨ AI Comic Creator
+        </div>
+
+        <h1>
+            Create Your Own Comic
+        </h1>
+
+        <p>
+            Turn your story idea into a beautiful comic
+            with characters, scenes and artwork.
+        </p>
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <form method="POST"
+          enctype="multipart/form-data"
+          class="comic-form">
+
+        <h2>
+            📝 Story Details
+        </h2>
+
+        <p class="form-subtitle">
+            Tell us about your comic — preview updates live
+        </p>
+
+
+        <!-- STORY PROMPT -->
+
+        <label>
+            Story Prompt
+        </label>
+
+        <textarea
+            id="story_prompt"
+            name="story_prompt"
+            placeholder="Example: A young hero discovers a mysterious power and must save his village..."
+        ></textarea>
+
+
+        <!-- CHARACTER -->
+
+        <label>
+            Main Character Name
+        </label>
+
+        <input
+            type="text"
+            id="character"
+            name="character"
+            placeholder="Example: Arjun"
+        >
+
+
+        <!-- SETTING -->
+
+        <label>
+            Setting
+        </label>
+
+        <input
+            type="text"
+            id="setting"
+            name="setting"
+            placeholder="Example: A futuristic city"
+        >
+
+
+        <!-- TONE -->
+
+        <label>
+            Tone
+        </label>
+
+        <select id="tone" name="tone">
+
+            <option value="Adventure">Adventure</option>
+            <option value="Funny">Funny</option>
+            <option value="Dramatic">Dramatic</option>
+            <option value="Mysterious">Mysterious</option>
+            <option value="Romantic">Romantic</option>
+            <option value="Sci-Fi">Sci-Fi</option>
+            <option value="Horror">Horror</option>
+            <option value="Fantasy">Fantasy</option>
+            <option value="Superhero">Superhero</option>
+
+        </select>
+
+
+        <!-- ART STYLE -->
+
+        <label>
+            Art Style
+        </label>
+
+        <select id="art_style" name="art_style">
+
+            <option value="Comic Book">Comic Book</option>
+            <option value="Cartoon">Cartoon</option>
+            <option value="Anime">Anime</option>
+            <option value="Manga">Manga</option>
+            <option value="Realistic">Realistic</option>
+            <option value="Noir">Noir</option>
+            <option value="Watercolor">Watercolor</option>
+
+        </select>
+
+
+        <!-- NUMBER OF PANELS -->
+
+        <label>
+            Number of Panels
+        </label>
+
+        <select id="panels" name="panels">
+
+            <option value="2">2 Panels</option>
+            <option value="3">3 Panels</option>
+            <option value="4" selected>4 Panels</option>
+            <option value="5">5 Panels</option>
+            <option value="6">6 Panels</option>
+
+        </select>
+
+
+        <!-- LAYOUT -->
+
+        <label>
+            Page Layout
+        </label>
+
+        <select id="layout" name="layout">
+
+            <option value="grid2">Classic Grid (2 columns)</option>
+            <option value="grid3">Dense Grid (3 columns)</option>
+            <option value="strip">Cinematic Strip (1 column)</option>
+
+        </select>
+
+
+        <!-- IMAGE -->
+
+        <label>
+            🖼️ Upload Character / Reference Image
+        </label>
+
+        <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            class="file-input"
+        >
+
+
+        <div class="button-row">
+
+            <button type="button"
+                    id="random-btn"
+                    class="secondary-btn">
+
+                🎲 Surprise Me
+
+            </button>
+
+            <button type="submit"
+                    class="create-btn">
+
+                ✨ Create My Comic
+
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- LIVE PREVIEW (REAL TIME) -->
+
+    <div id="live-preview" class="preview-section">
+
+        <div class="preview-header">
+
+            <span class="badge live-badge">
+                ⚡ Live Preview
+            </span>
+
+            <span id="preview-status"
+                  class="preview-status">
+                Start typing to see your comic...
+            </span>
+
+        </div>
+
+        <div id="preview-grid"
+             class="comic-grid layout-grid2">
+
+        </div>
+
+    </div>
+
+
+    <!-- GENERATED COMIC -->
+
+    {% if comic %}
+
+    <div class="result-section">
+
+        <div class="result-header">
+
+            <div>
+
+                <span class="badge">
+                    🎉 Comic Created
+                </span>
+
+                <h2>
+                    {{ comic.character }}'s Adventure
+                </h2>
+
+                <p>
+                    {{ comic.art_style }}
+                    ·
+                    {{ comic.tone }}
+                    ·
+                    {{ comic.panels }} Panels
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- COMIC PANELS -->
+
+        <div class="comic-grid layout-{{ comic.layout }}">
+
+            {% for scene in comic.scenes %}
+
+            <div class="comic-panel">
+
+                <div class="panel-number"
+                     style="background: {{ comic.theme }};">
+
+                    SCENE {{ scene.number }}
+                </div>
+
+
+                {% if comic.image %}
+<img
+    class="comic-image effect-{{ scene.effect }}"
+    src="{{ url_for('static', filename=comic.image) }}"
+    alt="Comic Image"
+>
+
+                {% else %}
+
+                <div class="image-placeholder">
+                    🎨
+                </div>
+
+                {% endif %}
+
+
+                <div class="panel-text">
+
+                    <h3>
+                        {{ comic.character }}
+                    </h3>
+
+                    <p>
+                        {{ scene.text }}
+                    </p>
+
+                    <div class="speech-bubble">
+                        💬 "{{ scene.dialogue }}"
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- EXPORT FORM -->
+
+        <form method="POST"
+              action="/export-pdf"
+              class="export-form">
+
+            <input type="hidden" name="character" value="{{ comic.character }}">
+            <input type="hidden" name="setting" value="{{ comic.setting }}">
+            <input type="hidden" name="tone" value="{{ comic.tone }}">
+            <input type="hidden" name="art_style" value="{{ comic.art_style }}">
+            <input type="hidden" name="panels" value="{{ comic.panels }}">
+            <input type="hidden" name="story_prompt" value="{{ comic.story_prompt }}">
+            <input type="hidden" name="seed" value="{{ comic.seed }}">
+            <input type="hidden" name="image_path" value="{{ comic.image or '' }}">
+
+            <button type="submit"
+                    class="export-btn">
+
+                📄 Export Comic as PDF
+
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<footer>
+
+    <p>
+        © 2026 ComicCraft
+        ·
+        Create. Imagine. Explore.
+    </p>
+
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
